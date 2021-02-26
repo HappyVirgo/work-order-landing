@@ -128,8 +128,8 @@ const ModalComponent = ({title, data, type}) => {
     let typeOf
     let historyNote
     let phone
+    let user
     let imageFile
-    let imageTitle
     let referenceID
     let assetID
     let warrantyPeriod1
@@ -153,18 +153,19 @@ const ModalComponent = ({title, data, type}) => {
     let warranty3typeStatus
     let warranty4typeStatus
     let componentWarranties
+    let author
 
     const Empty = ""
     if(type==="document") {
-        description = data['type']?data['type']['description']:Empty
+        description = data?data['description']:Empty
         typeOf = data['type']?data['type']['type']:Empty
         createdDate = data['createdAt']?data['createdAt']:Empty  
         updatedDate = data['updatedAt']?data['updatedAt']:Empty  
         imageFile = data['fileName']?data['fileName']:Empty  
-        imageTitle = data['documentId']?data['documentId']:Empty   
         referenceID = data['referenceId']?data['referenceId']:Empty   
         createdDate = data['dateCreated']?data['dateCreated']:Empty
         updatedDate = data['dateUpdated']?data['dateUpdated']:Empty
+        author = data['user']?data['user']:Empty
     } else if (type==="history") {
         phone = data['user']?data['user']['phoneNumber']:Empty  
         historyNote = data['note']?data['note']:Empty
@@ -236,10 +237,6 @@ const ModalComponent = ({title, data, type}) => {
     )   
     
     //Attachments
-    //const heroku = "https://cors-anywhere.herokuapp.com/"
-    //const imageURL = "https://ecotrak-documents-production.s3.us-east-2.amazonaws.com/img/uploads/"
-    //const imageURL = "https://ecotrak-documents-production.s3.us-east-2.amazonaws.com/img/uploads/photos/cache/80x80/100/portrait/"
-
     const imageFolder = "photos/"
     const documentFolder = "documents/"
 
@@ -248,7 +245,6 @@ const ModalComponent = ({title, data, type}) => {
     //const extension = fileExtension(url) 
     
     const extension = fileExtension(imageFile)
-    console.log("EXTENSION", extension)
     //STAGE env var to avoid CORS issues
     const imageURL = extension==="jpg" || extension==="png" || extension==="gif" || extension==="bmp" || extension==="jpeg" || extension==="xlsx"?"https://cors-anywhere.herokuapp.com/https://ecotrak-documents-development.s3.us-east-2.amazonaws.com/img/uploads/":"https://ecotrak-documents-development.s3.us-east-2.amazonaws.com/img/uploads/"
     //PROD env var
@@ -263,6 +259,7 @@ const ModalComponent = ({title, data, type}) => {
     const bodyAttachments = (
         <Grid style={modalStyle} className={classes.paper}>
             <h2 id="simple-modal-title">{description}</h2>
+            <h2 id="simple-modal-title">{`${author.jobTitle}/${author.firstName} ${author.lastName}/${author.companyName}/${author.email}`}</h2>
             <FullScreen handle={handle}>
             {/*<Button 
                 onClick={handle.exit}
@@ -292,22 +289,6 @@ const ModalComponent = ({title, data, type}) => {
             <p><strong>Updated At: </strong><span className={classes.date}><Moment format="MMMM D, YYYY hh:mm a">{updatedDate}</Moment></span></p>               
         </Grid>
     )  
-
-
-    const linkButton = (
-        <Button onClick={() => {
-            let url = `${imageURL}${imageFile}`;
-            let img = '<img src="'+url+'" alt="'+imageTitle+'">';
-            let m_title = "Attachments";
-            let header = '<html><head><title>' + m_title + '</title></head><body height="100%" width="100%">'
-            let popup = window.open();
-            popup.document.write(header);
-            popup.document.write(img);
-            popup.document.write('</body></html>');                     
-            popup.document.close();
-        }} variant="outlined" color="secondary" className={classes.button}>More Details</Button>
-        
-    )
     //History
     const bodyHistory = (
         <Grid style={modalStyle} className={classes.paper}>

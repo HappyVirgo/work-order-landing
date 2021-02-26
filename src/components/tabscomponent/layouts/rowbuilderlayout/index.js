@@ -25,6 +25,7 @@ const ROW_SIZE = 50;
 //Building rows
 export const Row = ({ index, style, data: { columns, items, classes } }) => {
     const item = items[index];
+    console.log('item', item)
     return (
         <TableRow className={classes.row} style={style} component="div">
             {columns.map((column, colIndex) => {

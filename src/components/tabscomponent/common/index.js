@@ -65,8 +65,8 @@ let columnsAttachments = [
     }, 
     {
         label: "Description",
-        dataKey: "type",
-        extraKey: "description",
+        dataKey: "description",
+        extraKey: false,
         numeric: false,
     },
     {

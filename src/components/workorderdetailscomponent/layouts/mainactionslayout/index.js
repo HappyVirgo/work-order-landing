@@ -190,7 +190,7 @@ export const MainActions = ({serviceProviders, jobtitles, noteserviceproviders, 
                 onCancel={resetCancelWOForm}
                 preConfirmationSubmit={cancelProceeds ? null : handleCancelProceeds}
                 btn1Label='Cancel this Work Order'
-                btn2Label="Close"
+                btn2Label='Close'
                 content={cancelWorkOrderContent}
             />
         </Grid>
