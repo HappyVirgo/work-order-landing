@@ -259,7 +259,6 @@ const ModalComponent = ({title, data, type}) => {
     const bodyAttachments = (
         <Grid style={modalStyle} className={classes.paper}>
             <h2 id="simple-modal-title">{description}</h2>
-            <h2 id="simple-modal-title">{`${author.jobTitle}/${author.firstName} ${author.lastName}/${author.companyName}/${author.email}`}</h2>
             <FullScreen handle={handle}>
             {/*<Button 
                 onClick={handle.exit}
@@ -282,11 +281,15 @@ const ModalComponent = ({title, data, type}) => {
                 className={classes.FullScreen}
             >
                 Fullscreen
-            </Button>                      
-            <p><strong>Reference ID: </strong>{referenceID}</p>
+            </Button>   
+            <p><strong>Job Title: </strong>{author?author.jobTitle:''}</p>
+            <p><strong>Name: </strong>{author?author.firsName+' '+author.lastName:''}</p>
+            <p><strong>Email: </strong>{author?author.email:''}</p>
+            <p><strong>Company: </strong>{author?author.companyName:''}</p>                   
+            {/* <p><strong>Reference ID: </strong>{referenceID}</p>
             <p><strong>Type: </strong>{typeOf}</p>  
             <p><strong>Created At: </strong><span className={classes.date}><Moment format="MMMM D, YYYY hh:mm a">{createdDate}</Moment></span></p>
-            <p><strong>Updated At: </strong><span className={classes.date}><Moment format="MMMM D, YYYY hh:mm a">{updatedDate}</Moment></span></p>               
+            <p><strong>Updated At: </strong><span className={classes.date}><Moment format="MMMM D, YYYY hh:mm a">{updatedDate}</Moment></span></p>                */}
         </Grid>
     )  
     //History
