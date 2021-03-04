@@ -113,7 +113,7 @@ const ModalComponent = ({title, data, type}) => {
 
     const buttonAttachments = (
         <Button variant="outlined" color="secondary" onClick={handleOpen} className={classes.button}>
-            More details
+            More Info
         </Button>
     )  
     
@@ -283,7 +283,7 @@ const ModalComponent = ({title, data, type}) => {
                 Fullscreen
             </Button>   
             <p><strong>Job Title: </strong>{author?author.jobTitle:''}</p>
-            <p><strong>Name: </strong>{author?author.firsName+' '+author.lastName:''}</p>
+            <p><strong>Name: </strong>{author?author.firstName+' '+author.lastName:''}</p>
             <p><strong>Email: </strong>{author?author.email:''}</p>
             <p><strong>Company: </strong>{author?author.companyName:''}</p>                   
             {/* <p><strong>Reference ID: </strong>{referenceID}</p>

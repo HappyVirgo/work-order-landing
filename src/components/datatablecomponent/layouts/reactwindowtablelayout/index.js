@@ -77,7 +77,8 @@ const useTableStyles = makeStyles(theme => ({
 const topOfList = React.createRef();
 const span = (<span ref={topOfList} />);
 const scrollToTop = () => {
-    if (topOfList.current) {
+    if (!!topOfList.current) {
+      console.log("scrolled")
       topOfList.current.scrollIntoView({block: 'center'});
     }
 };

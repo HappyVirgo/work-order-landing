@@ -1293,7 +1293,7 @@ class WorkOrdersBuilder extends Component {
                         }
                     }
                     break;
-                    case "unassignedWO":
+                    default:
                     // if(searchTermIn.length>3 && searchByIn<=1) {
                     //     let tmp = await this.props.fetchUnassignedWOData()
                     //     let dataSearch = tmp.data?tmp.data.work_orders:[]
@@ -1464,9 +1464,6 @@ class WorkOrdersBuilder extends Component {
                         }
                     }
                     break;                                                       
-                    default:
-                        tmpdata = await this.props.fetchEmergencyWOData()
-                        break;
                 }
             }
 
