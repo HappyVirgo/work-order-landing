@@ -34,7 +34,21 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '48px',
         fontWeight: 400,
         // margin: '10px'
-    }
+    },
+    '@media screen and (max-width: 1024px)': {
+        cta_description_text:{
+            fontSize: '12px',
+        },
+        cta_assigned_value: {
+            fontSize: '42px',
+        },
+        cta_pending_value: {
+            fontSize: '42px',
+        },
+        cta_unassigned_value: {
+            fontSize: '42px',
+        },
+    },    
 }));
 
 export const CTASectionLayout = ({assignedToMeWorkOrders, pendingWorkOrders, unassignedWorkOrders}) => {

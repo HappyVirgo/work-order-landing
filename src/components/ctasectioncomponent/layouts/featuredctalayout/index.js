@@ -36,7 +36,15 @@ const useStyles = makeStyles((theme) => ({
     },
     cta_hide: {
         display: "none !important"
-    }
+    },
+    '@media screen and (max-width: 1024px)': {
+        cta_emergency_value: {
+            fontSize: '30px',
+        },
+        cta_open_value: {
+            fontSize: '30px',
+        },
+    },
 }));
 
 export const FeaturedCTALayout = ({emergencyWorkOrders, openWorkOrders}) => {

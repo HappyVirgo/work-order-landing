@@ -71,8 +71,8 @@ let columnsAttachments = [
     },
     {
         label: "Document Type",
-        dataKey: "type",
-        extraKey: "type",
+        dataKey: "documentType",
+        extraKey: false,
         numeric: false,
     },
     {

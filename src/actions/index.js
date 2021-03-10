@@ -68,9 +68,15 @@ import {
     oauthFetchToken,
 } from './oauthtokenactions'
 
+//Cancel Work Order
 import {
     cancelWorkOrder
 } from './workordercancelactions'
+
+//Reassign Work Order
+import {
+    fetchServiceProvidersReassignData
+} from './workorderreassignactions'
 
 export {
     oauthFetchToken,
@@ -92,5 +98,6 @@ export {
     fetchWarrantyWOData,
     fetchJobTitlesWOData,
     fetchServiceProvidersWOData,
-    cancelWorkOrder
+    cancelWorkOrder,
+    fetchServiceProvidersReassignData
 }

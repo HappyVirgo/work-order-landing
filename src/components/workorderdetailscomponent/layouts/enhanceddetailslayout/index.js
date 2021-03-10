@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         marginLeft: '0px !important',
     },
+    '@media screen and (max-width: 1024px)': {
+        titleSize: 5,
+        descSize: 7,
+    },      
 }));
 
 export const EnhancedDetails = ({status, priority, tradeType, problemType, categoryType, woType, nte, raisedNte, nullVal}) => {
@@ -115,21 +119,25 @@ export const EnhancedDetails = ({status, priority, tradeType, problemType, categ
     let data = stringToDivide.split("-")    
     const titleSize = 5
     const descSize = 7
+    //1024 screens
+    //const titleSize1024 = 6
+    //const descSize1024 = 6 
+     
     return (
         <Grid item xs={12} md={12} lg={5} style={{padding:"10px"}}>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Status: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}>{statusDisplay!==null?statusDisplay:nullVal}</Typography>
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Priority: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Chip
                         className={priorityDisplay}
                         avatar={<Avatar className={classes.avatar}>{data[0]}</Avatar>}
@@ -138,15 +146,15 @@ export const EnhancedDetails = ({status, priority, tradeType, problemType, categ
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Trade Type: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}>{tradeType!==null?tradeType:nullVal}</Typography>
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Problem Type: </strong></Typography>
                 </Grid>
                 <Grid item xs={descSize}>
@@ -154,34 +162,34 @@ export const EnhancedDetails = ({status, priority, tradeType, problemType, categ
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Category: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}>{categoryType!==null?categoryType:nullVal}</Typography>
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>WO Type: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}>{woType!==null?woType:nullVal}</Typography>
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Original NTE: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}>${nte!==null?nte:nullVal}</Typography>
                 </Grid>                
             </Grid>
             <Grid container>
-                <Grid item xs={titleSize}>
+                <Grid item xs={titleSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}><strong>Raised NTE: </strong></Typography>
                 </Grid>
-                <Grid item xs={descSize}>
+                <Grid item xs={descSize} md={6}>
                     <Typography variant={'body1'} className={classes.text}>${raisedNte!==null?raisedNte:nullVal}</Typography>
                 </Grid>                
             </Grid>                                                                        

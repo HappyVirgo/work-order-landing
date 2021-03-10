@@ -30,6 +30,7 @@ import {
     fetchNotesWOData,
     fetchJobTitlesWOData,
     fetchServiceProvidersWOData,
+    fetchServiceProvidersReassignData,
     fetchAttachmentsWOData,
     fetchWarrantyWOData,
     createNoteWOData,
@@ -61,6 +62,7 @@ let historydata
 let notesdata
 let jobtitlesdata
 let noteserviceprovidersdata
+let reassignspdata
 let attachmentsdata
 let dtlsID
 let trgtID
@@ -82,10 +84,13 @@ let noteJobTitlesIds
 let serviceProvidersSelectVal
 let noteServiceProvidersIds
 
-//cancel Work
+//cancel Work Order
 let cancelWONoteDescription
 let cancelProceeds
 let workOrderCancelled
+
+//reassign Work Order
+let reassignSPSelectVal
 
 let workOrderUpdateResponse
 let updatedStatus
@@ -127,7 +132,8 @@ class WorkOrdersBuilder extends Component {
             noteServiceProvidersIds: [],
             cancelWONoteDescription: '',
             cancelProceeds: false,
-            workOrderCancelled: false
+            workOrderCancelled: false,
+            reassignSPSelectVal: ''
         };
     }
     handleChangeStateSearchTerm = (value) => {
@@ -347,6 +353,29 @@ class WorkOrdersBuilder extends Component {
         cancelProceeds = false;
     }
 
+    handleChangeReassignSPSelect = (value) => {
+        reassignSPSelectVal = value
+    }
+
+    handleReassignSPSelect = (event) => {
+        const { value } = event.target;
+        const itemsSelected = value;
+        this.setState({
+                reassignSPSelectVal: itemsSelected
+            }, this.handleChangeReassignSPSelect(itemsSelected)
+        );
+    }
+
+    resetReassingWOForm = () => {
+        this.setState({
+            reassignSPSelectVal: '',
+        },this.resetCancelWOFormState);
+    }
+
+    resetReassingWOFormState = () => {
+        reassignSPSelectVal = '';
+    }
+
     handleCancelWO = (cancelled) => {
         workOrderCancelled = cancelled
     }
@@ -439,7 +468,7 @@ class WorkOrdersBuilder extends Component {
         //userData = await this.props.fetchUsersInformation()
         //userId = userData.userdata.user.user_id   
         //Next line it's to test in local     
-        userId = "2146"
+        userId = "2152"
         this.setState({ 
             firstLoading: true
         })
@@ -460,6 +489,7 @@ class WorkOrdersBuilder extends Component {
         notesdata = await this.props.fetchNotesWOData()
         jobtitlesdata = await this.props.fetchJobTitlesWOData()
         noteserviceprovidersdata = await this.props.fetchServiceProvidersWOData()
+        //reassignspdata = await this.props.fetchServiceProvidersReassignData()
         //serviceProviders = await this.props.fetchServiceProviders();
         // this.sortOrderNotesByDate()
         warrantydata = await this.props.fetchWarrantyWOData()
@@ -483,6 +513,7 @@ class WorkOrdersBuilder extends Component {
         notesdata = await this.props.fetchNotesWOData(dtlsID, token)
         jobtitlesdata = await this.props.fetchJobTitlesWOData(dtlsID, token)
         noteserviceprovidersdata = await this.props.fetchServiceProvidersWOData(dtlsID, token)
+        //reassignspdata = await this.props.fetchServiceProvidersReassignData()
         // this.sortOrderNotesByDate()
         attachmentsdata = await this.props.fetchAttachmentsWOData(dtlsID, token)
         historydata = await this.props.fetchHistoryWOData(dtlsID, token)
@@ -586,7 +617,7 @@ class WorkOrdersBuilder extends Component {
             })
             */
            //Change details data
-           const handleChangePrevState = (dtlsID) => {
+            const handleChangePrevState = (dtlsID) => {
             const id = dtlsID
             handleId(id)
             }
@@ -597,6 +628,7 @@ class WorkOrdersBuilder extends Component {
                     notesdata = await this.props.fetchNotesWOData(dtlsID, token)
                     jobtitlesdata = await this.props.fetchJobTitlesWOData(dtlsID, token)
                     noteserviceprovidersdata = await this.props.fetchServiceProvidersWOData(dtlsID, token)
+                    //reassignspdata = await this.props.fetchServiceProvidersReassignData()
                     //serviceProviders = await this.props.fetchServiceProviders(dtlsID, token);
                     // this.sortOrderNotesByDate()
                     attachmentsdata = await this.props.fetchAttachmentsWOData(dtlsID, token)
@@ -605,7 +637,7 @@ class WorkOrdersBuilder extends Component {
                 }
                 this.setState({loadingDetails: false})
             }
-           if(prevState.workOrderCancelled !== this.state.workOrderCancelled) {
+            if(prevState.workOrderCancelled !== this.state.workOrderCancelled) {
                 let cancel = await this.props.cancelWorkOrder()
                 this.resetCancelWOForm();
                 this.setState({loadingDetails: true}, handleChangePrevState(dtlsID))
@@ -620,153 +652,7 @@ class WorkOrdersBuilder extends Component {
                      */
                     //Each case should be the CTA id
                     case "emergencyWO":
-                        // if(searchTermIn.length>3 && searchByIn<=1) {
-                        //     let tmp = await this.props.fetchEmergencyWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     if(filterByInByAssetType.length>0){
-                        //         let dataSearched = dataSearch.filter(term => term['description'].includes(searchTerm.toLowerCase()))
-                        //         dataSearched = dataSearched.filter(term => term['asset']['assetType']['description'].toLowerCase().includes(filterByInByAssetType.toLowerCase()))
-                        //         // if(filterByInByCategory.length>0) {
-                        //         //     dataSearched = dataSearched.filter(term => {
-                        //         //         let notNull = term['priority']!==null?term['priority']['description']:""
-                        //         //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //         //     })
-                        //         // }
-                        //         if(filterByInByStatus.length>0) {
-                        //             dataSearched = dataSearched.filter(term => {
-                        //                 let notNull = term['status']!==null?term['status']['description']:""
-                        //                 return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //             })                         
-                        //         }
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }                            
-                        //     } else {
-                        //         let dataSearched = dataSearch.filter(term => term['workOrderId'].toString().includes(searchTerm))
-                        //         console.log(dataSearched)
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         } 
-                        //     }
-                        // }else if(searchTermIn.length>3 && searchByIn>1){
-                        //     let tmp = await this.props.fetchSearchData()
-                        //     let dataSearched = tmp.data?tmp.data.work_orders:[]                        
-                        //     // if(filterByInByCategory.length>0) {
-                        //     //     dataSearched = dataSearched.filter(term => {
-                        //     //         let notNull = term['priority']!==null?term['priority']['description']:""
-                        //     //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //     //     })
-                        //     //     tmpdata = {
-                        //     //         data: {
-                        //     //             work_orders: dataSearched
-                        //     //         }
-                        //     //     }                             
-                        //     // } 
-                        //     if(filterByInByStatus.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['status']!==null?term['status']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //         })
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }                                                      
-                        //     } else if(filterByInByAssetType.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //         })
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }   
-                        //     } else {
-                        //         tmpdata = await this.props.fetchSearchData()
-                        //     }                        
-                        // //Default filter by asset type without search                        
-                        // }else if(filterByInByAssetType.length>0) {
-                        //     let tmp = await this.props.fetchEmergencyWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     let dataSearched = dataSearch.filter(term => {
-                        //         let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //         return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //     })
-                        //     // if(filterByInByCategory.length>0) {
-                        //     //     dataSearched = dataSearched.filter(term => {
-                        //     //         let notNull = term['priority']!==null?term['priority']['description']:""
-                        //     //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //     //     })
-                        //     // } 
-                        //     if(filterByInByStatus.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['status']!==null?term['status']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //         })                         
-                        //     }                        
-                        //     tmpdata = {
-                        //         data: {
-                        //             work_orders: dataSearched
-                        //         }
-                        //     }
-                        // //Default filter by status without search   
-                        // }else if(filterByInByStatus.length>0) {
-                        //     let tmp = await this.props.fetchEmergencyWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     let dataSearched = dataSearch.filter(term => {
-                        //         let notNull = term['status']!==null?term['status']['description']:""
-                        //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //     })
-                        //     if(filterByInByAssetType.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //         })
-                        //     } else if(filterByInByCategory.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['priority']!==null?term['priority']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //         })                         
-                        //     }                        
-                        //     tmpdata = {
-                        //         data: {
-                        //             work_orders: dataSearched
-                        //         }
-                        //     }  
-                        // //Default filter by priority without search   
-                        // }
-                        // // else if(filterByInByCategory.length>0) {
-                        // //     let tmp = await this.props.fetchEmergencyWOData()
-                        // //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        // //     let dataSearched = dataSearch.filter(term => {
-                        // //         let notNull = term['priority']!==null?term['priority']['description']:""
-                        // //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        // //     })
-                        // //     if(filterByInByAssetType.length>0) {
-                        // //         dataSearched = dataSearched.filter(term => {
-                        // //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        // //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        // //         })
-                        // //     } else if(filterByInByStatus.length>0) {
-                        // //         dataSearched = dataSearched.filter(term => {
-                        // //             let notNull = term['status']!==null?term['status']['description']:""
-                        // //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        // //         })                         
-                        // //     }                        
-                        // //     tmpdata = {
-                        // //         data: {
-                        // //             work_orders: dataSearched
-                        // //         }
-                        // //     }                                              
-                        // // }
-                        // else if(searchTermIn.length === 0 && this.state.firstLoading === false) {
-                        //     tmpdata = await this.props.fetchEmergencyWOData()
-                        // }     
+                        
                         tmp = await this.props.fetchEmergencyWOData()
                         dataSearch = tmp.data?tmp.data.work_orders:[]  
                         if(searchTermIn.length>3) {
@@ -791,148 +677,7 @@ class WorkOrdersBuilder extends Component {
                         }
                         break; 
                     case "openWO":
-                        // if(searchTermIn.length>3 && searchByIn<=1) {
-                        //     let tmp = await this.props.fetchOpenWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     if(filterByInByAssetType.length>0){
-                        //         let dataSearched = dataSearch.filter(term => term['description'].includes(searchTerm.toLowerCase()))
-                        //         dataSearched = dataSearched.filter(term => term['asset']['assetType']['description'].toLowerCase().includes(filterByInByAssetType.toLowerCase()))
-                        //         if(filterByInByCategory.length>0) {
-                        //             dataSearched = dataSearched.filter(term => {
-                        //                 let notNull = term['priority']!==null?term['priority']['description']:""
-                        //                 return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //             })
-                        //         } else if(filterByInByStatus.length>0) {
-                        //             dataSearched = dataSearched.filter(term => {
-                        //                 let notNull = term['status']!==null?term['status']['description']:""
-                        //                 return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //             })                         
-                        //         }
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }                            
-                        //     } else {
-                        //         let dataSearched = dataSearch.filter(term => term['workOrderId'].toString().includes(searchTerm))
-                        //         console.log(dataSearched)
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         } 
-                        //     }
-                        // }else if(searchTermIn.length>3 && searchByIn>1){
-                        //     let tmp = await this.props.fetchSearchData()
-                        //     let dataSearched = tmp.data?tmp.data.work_orders:[]                        
-                        //     if(filterByInByCategory.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['priority']!==null?term['priority']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //         })
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }                             
-                        //     } else if(filterByInByStatus.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['status']!==null?term['status']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //         })
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }                                                      
-                        //     } else if(filterByInByAssetType.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //         })
-                        //         tmpdata = {
-                        //             data: {
-                        //                 work_orders: dataSearched
-                        //             }
-                        //         }   
-                        //     } else {
-                        //         tmpdata = await this.props.fetchSearchData()
-                        //     }                        
-                        // //Default filter by asset type without search                        
-                        // }else if(filterByInByAssetType.length>0) {
-                        //     let tmp = await this.props.fetchOpenWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     let dataSearched = dataSearch.filter(term => {
-                        //         let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //         return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //     })
-                        //     if(filterByInByCategory.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['priority']!==null?term['priority']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //         })
-                        //     } else if(filterByInByStatus.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['status']!==null?term['status']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //         })                         
-                        //     }                        
-                        //     tmpdata = {
-                        //         data: {
-                        //             work_orders: dataSearched
-                        //         }
-                        //     }
-                        // //Default filter by status without search   
-                        // }else if(filterByInByStatus.length>0) {
-                        //     let tmp = await this.props.fetchOpenWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     let dataSearched = dataSearch.filter(term => {
-                        //         let notNull = term['status']!==null?term['status']['description']:""
-                        //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //     })
-                        //     if(filterByInByAssetType.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //         })
-                        //     } else if(filterByInByCategory.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['priority']!==null?term['priority']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //         })                         
-                        //     }                        
-                        //     tmpdata = {
-                        //         data: {
-                        //             work_orders: dataSearched
-                        //         }
-                        //     }  
-                        // //Default filter by priority without search   
-                        // }else if(filterByInByCategory.length>0) {
-                        //     let tmp = await this.props.fetchOpenWOData()
-                        //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                        //     let dataSearched = dataSearch.filter(term => {
-                        //         let notNull = term['priority']!==null?term['priority']['description']:""
-                        //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                        //     })
-                        //     if(filterByInByAssetType.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                        //         })
-                        //     } else if(filterByInByStatus.length>0) {
-                        //         dataSearched = dataSearched.filter(term => {
-                        //             let notNull = term['status']!==null?term['status']['description']:""
-                        //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                        //         })                         
-                        //     }                        
-                        //     tmpdata = {
-                        //         data: {
-                        //             work_orders: dataSearched
-                        //         }
-                        //     }                                              
-                        // }else if(searchTermIn.length === 0 && this.state.firstLoading === false) {
-                        //     tmpdata = await this.props.fetchOpenWOData()
-                        // }   
+                        
                         tmp = await this.props.fetchOpenWOData()
                         dataSearch = tmp.data?tmp.data.work_orders:[]
                         if(searchTermIn.length>3) {
@@ -957,154 +702,7 @@ class WorkOrdersBuilder extends Component {
                         }
                         break;
                     case "pendingWO":
-                    // if(searchTermIn.length>3 && searchByIn<=1) {
-                    //     let tmp = await this.props.fetchPendingWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     if(filterByInByAssetType.length>0){
-                    //         let dataSearched = dataSearch.filter(term => term['description'].includes(searchTerm.toLowerCase()))
-                    //         dataSearched = dataSearched.filter(term => term['asset']['assetType']['description'].toLowerCase().includes(filterByInByAssetType.toLowerCase()))
-                    //         if(filterByInByCategory.length>0) {
-                    //             dataSearched = dataSearched.filter(term => {
-                    //                 let notNull = term['priority']!==null?term['priority']['description']:""
-                    //                 return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //             })
-                    //         }
-                    //         //  else if(filterByInByStatus.length>0) {
-                    //         //     dataSearched = dataSearched.filter(term => {
-                    //         //         let notNull = term['status']!==null?term['status']['description']:""
-                    //         //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //         //     })                         
-                    //         // }
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                            
-                    //     } else {
-                    //         let dataSearched = dataSearch.filter(term => term['workOrderId'].toString().includes(searchTerm))
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         } 
-                    //     }
-                    // }else if(searchTermIn.length>3 && searchByIn>1){
-                    //     let tmp = await this.props.fetchSearchData()
-                    //     let dataSearched = tmp.data?tmp.data.work_orders:[]                        
-                    //     if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                             
-                    //     }
-                    //     //  else if(filterByInByStatus.length>0) {
-                    //     //     dataSearched = dataSearched.filter(term => {
-                    //     //         let notNull = term['status']!==null?term['status']['description']:""
-                    //     //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     //     })
-                    //     //     tmpdata = {
-                    //     //         data: {
-                    //     //             work_orders: dataSearched
-                    //     //         }
-                    //     //     }                                                      
-                    //     // }
-                    //     else if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }   
-                    //     } else {
-                    //         tmpdata = await this.props.fetchSearchData()
-                    //     }                        
-                    // //Default filter by asset type without search                        
-                    // }else if(filterByInByAssetType.length>0) {
-                    //     let tmp = await this.props.fetchPendingWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //     })
-                    //     if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })
-                    //     }
-                    //     //  else if(filterByInByStatus.length>0) {
-                    //     //     dataSearched = dataSearched.filter(term => {
-                    //     //         let notNull = term['status']!==null?term['status']['description']:""
-                    //     //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     //     })                         
-                    //     // }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }
-                    // //Default filter by status without search   
-                    // }
-                    // // else if(filterByInByStatus.length>0) {
-                    // //     let tmp = await this.props.fetchPendingWOData()
-                    // //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    // //     let dataSearched = dataSearch.filter(term => {
-                    // //         let notNull = term['status']!==null?term['status']['description']:""
-                    // //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    // //     })
-                    // //     if(filterByInByAssetType.length>0) {
-                    // //         dataSearched = dataSearched.filter(term => {
-                    // //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    // //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    // //         })
-                    // //     } else if(filterByInByCategory.length>0) {
-                    // //         dataSearched = dataSearched.filter(term => {
-                    // //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    // //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    // //         })                         
-                    // //     }                        
-                    // //     tmpdata = {
-                    // //         data: {
-                    // //             work_orders: dataSearched
-                    // //         }
-                    // //     }  
-                    // // //Default filter by priority without search   
-                    // // }
-                    // else if(filterByInByCategory.length>0) {
-                    //     let tmp = await this.props.fetchPendingWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['priority']!==null?term['priority']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //     })
-                    //     if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //     }
-                    //     //  else if(filterByInByStatus.length>0) {
-                    //     //     dataSearched = dataSearched.filter(term => {
-                    //     //         let notNull = term['status']!==null?term['status']['description']:""
-                    //     //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     //     })                         
-                    //     // }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }                                              
-                    // }else {
-                    //     tmpdata = await this.props.fetchPendingWOData()
-                    // }     
+                    
                     tmp = await this.props.fetchPendingWOData()
                     dataSearch = tmp.data?tmp.data.work_orders:[]  
                     if(searchTermIn.length>3) {
@@ -1128,148 +726,7 @@ class WorkOrdersBuilder extends Component {
                     }
                     break;                   
                     case "assignedWO":
-                    // if(searchTermIn.length>3 && searchByIn<=1) {
-                    //     let tmp = await this.props.fetchAssignedToMeWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     if(filterByInByAssetType.length>0){
-                    //         let dataSearched = dataSearch.filter(term => term['description'].includes(searchTerm.toLowerCase()))
-                    //         dataSearched = dataSearched.filter(term => term['asset']['assetType']['description'].toLowerCase().includes(filterByInByAssetType.toLowerCase()))
-                    //         if(filterByInByCategory.length>0) {
-                    //             dataSearched = dataSearched.filter(term => {
-                    //                 let notNull = term['priority']!==null?term['priority']['description']:""
-                    //                 return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //             })
-                    //         } else if(filterByInByStatus.length>0) {
-                    //             dataSearched = dataSearched.filter(term => {
-                    //                 let notNull = term['status']!==null?term['status']['description']:""
-                    //                 return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //             })                         
-                    //         }
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                            
-                    //     } else {
-                    //         let dataSearched = dataSearch.filter(term => term['workOrderId'].toString().includes(searchTerm))
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         } 
-                    //     }
-                    // }else if(searchTermIn.length>3 && searchByIn>1){
-                    //     let tmp = await this.props.fetchSearchData()
-                    //     let dataSearched = tmp.data?tmp.data.work_orders:[]                        
-                    //     if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                             
-                    //     } else if(filterByInByStatus.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['status']!==null?term['status']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                                                      
-                    //     } else if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }   
-                    //     } else {
-                    //         tmpdata = await this.props.fetchSearchData()
-                    //     }                        
-                    // //Default filter by asset type without search                        
-                    // }else if(filterByInByAssetType.length>0) {
-                    //     let tmp = await this.props.fetchAssignedToMeWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //     })
-                    //     if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })
-                    //     } else if(filterByInByStatus.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['status']!==null?term['status']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //         })                         
-                    //     }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }
-                    // //Default filter by status without search   
-                    // }else if(filterByInByStatus.length>0) {
-                    //     let tmp = await this.props.fetchAssignedToMeWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['status']!==null?term['status']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     })
-                    //     if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //     } else if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })                         
-                    //     }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }  
-                    // //Default filter by priority without search   
-                    // }else if(filterByInByCategory.length>0) {
-                    //     let tmp = await this.props.fetchAssignedToMeWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['priority']!==null?term['priority']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //     })
-                    //     if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //     } else if(filterByInByStatus.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['status']!==null?term['status']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //         })                         
-                    //     }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }                                              
-                    // }else {
-                    //     tmpdata = await this.props.fetchAssignedToMeWOData()
-                    // }                
-                    // break; 
+                    
                     tmp = await this.props.fetchAssignedToMeWOData()
                     dataSearch = tmp.data?tmp.data.work_orders:[]  
                     if(searchTermIn.length>3) {
@@ -1294,154 +751,7 @@ class WorkOrdersBuilder extends Component {
                     }
                     break;
                     default:
-                    // if(searchTermIn.length>3 && searchByIn<=1) {
-                    //     let tmp = await this.props.fetchUnassignedWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     if(filterByInByAssetType.length>0){
-                    //         let dataSearched = dataSearch.filter(term => term['description'].includes(searchTerm.toLowerCase()))
-                    //         dataSearched = dataSearched.filter(term => term['asset']['assetType']['description'].toLowerCase().includes(filterByInByAssetType.toLowerCase()))
-                    //         if(filterByInByCategory.length>0) {
-                    //             dataSearched = dataSearched.filter(term => {
-                    //                 let notNull = term['priority']!==null?term['priority']['description']:""
-                    //                 return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //             })
-                    //         }
-                    //         //  else if(filterByInByStatus.length>0) {
-                    //         //     dataSearched = dataSearched.filter(term => {
-                    //         //         let notNull = term['status']!==null?term['status']['description']:""
-                    //         //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //         //     })                         
-                    //         // }
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                            
-                    //     } else {
-                    //         let dataSearched = dataSearch.filter(term => term['workOrderId'].toString().includes(searchTerm))
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         } 
-                    //     }
-                    // }else if(searchTermIn.length>3 && searchByIn>1){
-                    //     let tmp = await this.props.fetchSearchData()
-                    //     let dataSearched = tmp.data?tmp.data.work_orders:[]                        
-                    //     if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }                             
-                    //     }
-                    //     //  else if(filterByInByStatus.length>0) {
-                    //     //     dataSearched = dataSearched.filter(term => {
-                    //     //         let notNull = term['status']!==null?term['status']['description']:""
-                    //     //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     //     })
-                    //     //     tmpdata = {
-                    //     //         data: {
-                    //     //             work_orders: dataSearched
-                    //     //         }
-                    //     //     }                                                      
-                    //     // }
-                    //     else if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //         tmpdata = {
-                    //             data: {
-                    //                 work_orders: dataSearched
-                    //             }
-                    //         }   
-                    //     } else {
-                    //         tmpdata = await this.props.fetchSearchData()
-                    //     }                        
-                    // //Default filter by asset type without search                        
-                    // }else if(filterByInByAssetType.length>0) {
-                    //     let tmp = await this.props.fetchUnassignedWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //     })
-                    //     if(filterByInByCategory.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //         })
-                    //     }
-                    //     //  else if(filterByInByStatus.length>0) {
-                    //     //     dataSearched = dataSearched.filter(term => {
-                    //     //         let notNull = term['status']!==null?term['status']['description']:""
-                    //     //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     //     })                         
-                    //     // }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }
-                    // //Default filter by status without search   
-                    // }
-                    // // else if(filterByInByStatus.length>0) {
-                    // //     let tmp = await this.props.fetchUnassignedWOData()
-                    // //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    // //     let dataSearched = dataSearch.filter(term => {
-                    // //         let notNull = term['status']!==null?term['status']['description']:""
-                    // //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    // //     })
-                    // //     if(filterByInByAssetType.length>0) {
-                    // //         dataSearched = dataSearched.filter(term => {
-                    // //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    // //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    // //         })
-                    // //     } else if(filterByInByCategory.length>0) {
-                    // //         dataSearched = dataSearched.filter(term => {
-                    // //             let notNull = term['priority']!==null?term['priority']['description']:""
-                    // //             return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    // //         })                         
-                    // //     }                        
-                    // //     tmpdata = {
-                    // //         data: {
-                    // //             work_orders: dataSearched
-                    // //         }
-                    // //     }  
-                    // // //Default filter by priority without search   
-                    // // }
-                    // else if(filterByInByCategory.length>0) {
-                    //     let tmp = await this.props.fetchUnassignedWOData()
-                    //     let dataSearch = tmp.data?tmp.data.work_orders:[]
-                    //     let dataSearched = dataSearch.filter(term => {
-                    //         let notNull = term['priority']!==null?term['priority']['description']:""
-                    //         return notNull.toLowerCase().includes(filterByInByCategory.toLowerCase())
-                    //     })
-                    //     if(filterByInByAssetType.length>0) {
-                    //         dataSearched = dataSearched.filter(term => {
-                    //             let notNull = term['asset']!==null?term['asset']['assetType']['description']:""
-                    //             return notNull.toLowerCase().includes(filterByInByAssetType.toLowerCase())
-                    //         })
-                    //     }
-                    //     //  else if(filterByInByStatus.length>0) {
-                    //     //     dataSearched = dataSearched.filter(term => {
-                    //     //         let notNull = term['status']!==null?term['status']['description']:""
-                    //     //         return notNull.toLowerCase().includes(filterByInByStatus.toLowerCase())
-                    //     //     })                         
-                    //     // }                        
-                    //     tmpdata = {
-                    //         data: {
-                    //             work_orders: dataSearched
-                    //         }
-                    //     }                                              
-                    // }else {
-                    //     tmpdata = await this.props.fetchUnassignedWOData()
-                    // }  
+                    
                     tmp = await this.props.fetchUnassignedWOData()
                     dataSearch = tmp.data?tmp.data.work_orders:[] 
                     if(searchTermIn.length>3) {
@@ -1573,6 +883,7 @@ class WorkOrdersBuilder extends Component {
             noteServiceProvidersIds: this.state.noteServiceProvidersIds,
             cancelWONoteDescription: this.state.cancelWONoteDescription,
             cancelProceeds: this.state.cancelProceeds,
+            reassignSPSelectVal: this.state.reassignSPSelectVal,
             handleJobTitlesSelect: this.handleJobTitlesSelect,
             handleOnDeleteChipJobTitle: this.handleOnDeleteChipJobTitle,
             handleServiceProvidersSelect: this.handleServiceProvidersSelect,
@@ -1581,7 +892,9 @@ class WorkOrdersBuilder extends Component {
             handleCancelNoteInput: this.handleCancelNoteInput,
             handleCancelProceeds: this.handleCancelProceeds,
             cancelWorkOrder: this.cancelWorkOrder,
-            resetCancelWOForm: this.resetCancelWOForm
+            resetCancelWOForm: this.resetCancelWOForm,
+            handleReassignSPSelect: this.handleReassignSPSelect,
+            resetReassingWOForm: this.resetReassingWOForm
         }
         return (
             <GlobalContext.Provider value={globalState}>
@@ -1621,6 +934,7 @@ class WorkOrdersBuilder extends Component {
                                 notes={notesdata}
                                 jobtitles={jobtitlesdata}
                                 noteserviceproviders={noteserviceprovidersdata}
+                                reassignserviceproviders={reassignspdata}
                                 //serviceProviders={serviceProviders}
                                 firstLoading={this.state.firstLoading}
                                 warranty={warrantydata}
@@ -1658,6 +972,7 @@ const mapDispatchToProps = dispatch => ({
     createNoteWOData: () => dispatch(createNoteWOData(noteDescription, dtlsID, token, userId, customerId, noteJobTitlesIds, noteServiceProvidersIds)),
     fetchAttachmentsWOData: ()=> dispatch(fetchAttachmentsWOData(dtlsID, token)),
     cancelWorkOrder: ()=> dispatch(cancelWorkOrder(dtlsID, token, cancelWONoteDescription, userId, customerId)),
+    fetchServiceProvidersReassignData: ()=>dispatch(fetchServiceProvidersReassignData(dtlsID, userId, token))
 })
 
 

@@ -23,7 +23,16 @@ import {
     //ModalComponent
 } from '../../../../components'
 
-export const RenderNotNull = ({detailsdata, history, attachments, notes, jobtitles, noteserviceproviders, warranty, serviceProviders}) => {   
+export const RenderNotNull = ({
+    detailsdata,
+    history, 
+    attachments, 
+    notes, 
+    jobtitles, 
+    noteserviceproviders, 
+    reassignserviceproviders, 
+    warranty, 
+    serviceProviders}) => {   
     //In null case
     const nullVal = null;    
     //Image Section
@@ -54,7 +63,7 @@ export const RenderNotNull = ({detailsdata, history, attachments, notes, jobtitl
     let serviceProvider
     let assignTo
     let invoiceStatus
-    let invoiceStatusDesc
+    //let invoiceStatusDesc
     //Location Section
     let locationAddress
     let location
@@ -64,8 +73,9 @@ export const RenderNotNull = ({detailsdata, history, attachments, notes, jobtitl
     let proposalStatus
     let proposalId    
     let invoiceId
-    let serviceProviderLast
-    
+    //let serviceProviderLast
+    let storeNumber
+
     let isAvailable
 
     if(detailsdata!==undefined){
@@ -130,7 +140,7 @@ export const RenderNotNull = ({detailsdata, history, attachments, notes, jobtitl
             locationAddress = detailsdata.data.work_order.location!==nullVal?detailsdata.data.work_order.location.address1:nullVal;
             location = detailsdata.data.work_order.location!==nullVal?detailsdata.data.work_order.location.name:nullVal;
             locationPhone = detailsdata.data.work_order.location!==nullVal?detailsdata.data.work_order.location.phone1:nullVal;
-            
+            storeNumber = detailsdata.data.work_order.location!==nullVal?detailsdata.data.work_order.location.store_number:nullVal;
 
     }
     return(
@@ -152,12 +162,15 @@ export const RenderNotNull = ({detailsdata, history, attachments, notes, jobtitl
                     assetType={assetType}
                     warrantyLabel={warrantyLabel}
                     warranty={warranty}
+                    storeNumber={storeNumber}
                     nullVal={nullVal}
                 />
                 <MainActions
+                    detailsdata={detailsdata}
                     serviceProviders={serviceProviders}
                     jobtitles={jobtitles}
                     noteserviceproviders={noteserviceproviders}
+                    reassignserviceproviders={reassignserviceproviders}
                     status={status}
                 />
             </Grid>
