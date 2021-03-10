@@ -55,21 +55,19 @@ body {
 .MuiSelect-select.MuiSelect-select {
     padding-left: 6px;
 }
-.pg-viewer-wrapper{
-    height: 500px !important;
+.photo-viewer-container {
+    height: 100% !important;
     width: 100% !important;
-    img, canvas {
-        width: 100% !important;
-        height: auto !important;
-        display: block;
-        margin: auto;        
+    img {
+        height: 100% !important;
+        width: auto !important;
     }
 }
 .enabledFull {
     display: none !important;
 }   
 .fullscreen-enabled {
-    background: #FFF;
+    background: #000;
     .pg-viewer-wrapper {
         height: 100vh !important;
         width: 100% !important;        

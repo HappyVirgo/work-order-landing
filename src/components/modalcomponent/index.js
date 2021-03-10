@@ -8,6 +8,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
+import IconButton from '@material-ui/core/IconButton';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 
 //Material UI
 import { Button, Divider } from '@material-ui/core';
@@ -113,7 +115,9 @@ const ModalComponent = ({title, data, type}) => {
 
     const buttonAttachments = (
         <Button variant="outlined" color="secondary" onClick={handleOpen} className={classes.button}>
-            More Info
+            <IconButton aria-label="More Info" onClick={handleOpen} className={classes.padding5} >
+                <OpenInBrowserIcon color="secondary" />
+            </IconButton>
         </Button>
     )  
     
@@ -246,9 +250,9 @@ const ModalComponent = ({title, data, type}) => {
     
     const extension = fileExtension(imageFile)
     //STAGE env var to avoid CORS issues
-    const imageURL = extension==="jpg" || extension==="png" || extension==="gif" || extension==="bmp" || extension==="jpeg" || extension==="xlsx"?"https://cors-anywhere.herokuapp.com/https://ecotrak-documents-development.s3.us-east-2.amazonaws.com/img/uploads/":"https://ecotrak-documents-development.s3.us-east-2.amazonaws.com/img/uploads/"
+    //const imageURL = extension==="jpg" || extension==="png" || extension==="gif" || extension==="bmp" || extension==="jpeg" || extension==="xlsx"?"https://cors-anywhere.herokuapp.com/https://ecotrak-documents-development.s3.us-east-2.amazonaws.com/img/uploads/":"https://ecotrak-documents-development.s3.us-east-2.amazonaws.com/img/uploads/"
     //PROD env var
-    //const imageURL = "https://ecotrak-documents-production.s3.us-east-2.amazonaws.com/img/uploads/"
+    const imageURL = "https://ecotrak-documents-production.s3.us-east-2.amazonaws.com/img/uploads/"
     const url = validateUrlExtension(extension, imageFile, imageURL, imageFolder, documentFolder)
     //console.log("url", url)
     //let pre_url = ifImage(extension); 

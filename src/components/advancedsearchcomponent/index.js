@@ -61,7 +61,6 @@ const AdvancedSearchComponent = () => {
     let searchTerm = searchFunc.handleSearchTerm 
     let searchBy = searchFunc.handleSearchBy
     let searchByState = searchFunc.searchByState
-    let searchTermState = searchFunc.searchTermState
     const classes = useStyles();
     return (
         <div className={`search-form ${searchBox?'rounded':''}`}>
@@ -111,7 +110,7 @@ const AdvancedSearchComponent = () => {
                     InputProps={{ classes: {
                                     underline: classes.underline
                                 },
-                                  endAdornment: (
+                                    endAdornment: (
                                     <InputAdornment position="start">
                                         <SearchIcon />
                                     </InputAdornment>

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 //export const Details = ({detailsdata, history, attachments, notes, warranty, serviceProviders}) => {
-export const Details = ({detailsdata, history, attachments, notes, jobtitles, noteserviceproviders, warranty}) => {
+export const Details = ({detailsdata, history, attachments, notes, jobtitles, noteserviceproviders, reassignserviceproviders, warranty}) => {
     const classes = useStyles()
     
     return (
@@ -28,6 +28,7 @@ export const Details = ({detailsdata, history, attachments, notes, jobtitles, no
             notes={notes}
             jobtitles={jobtitles}
             noteserviceproviders={noteserviceproviders}
+            reassignserviceproviders={reassignserviceproviders}
             warranty={warranty}
             />:<RenderNull />):""}
     </div>

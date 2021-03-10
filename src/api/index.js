@@ -12,6 +12,7 @@ const _PROD = "https://api.ecotrak.com/v1/workorders/"
 const STAGE = "https://api.ecotrak.com/stagev1/workorders/user/"
 const _STAGE = "https://api.ecotrak.com/stagev1/workorders/"
 
+
 //CTA Data
 export const apiCTA = STAGE
 
@@ -56,3 +57,6 @@ export const apiServiceProvidersWO = _STAGE
 
 //Cancel WorkOrders
 export const apiCancelWO = _STAGE
+
+//Reassign WorkOrders
+export const apiServiceProvidersReassign = _STAGE
