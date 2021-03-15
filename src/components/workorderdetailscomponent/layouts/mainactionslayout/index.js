@@ -10,7 +10,7 @@ import {AddNoteComponent} from '../addnotelayout';
 import {CancelWorkOrderComponent} from '../cancelworkorderlayout';
 import {ReassignWorkOrderComponent} from '../reassignworkorderlayout';
 // app status
-import { W0_STATUS_CAN_CANCEL } from '../../constants/index';
+import { WO_STATUS_CAN_CANCEL, WO_STATUS_CAN_REASSIGN } from '../../constants/index';
 
 //Icons
 import {
@@ -101,7 +101,8 @@ const useStyles = makeStyles((theme) => ({
 export const MainActions = ({detailsdata, jobtitles, noteserviceproviders, reassignserviceproviders, status}) => {
     const classes = useStyles()
     const global = useContext(GlobalContext)
-    
+    const permissions = global.permissions.data.userPermissions.find(item => item.permission === 'Work Orders')
+
     // ADD NOTES FUNCTIONALLITY
     const createNoteWOData = global.createNoteWOData;
     const noteDescriptionError =  global.noteDescription === '' ||  global.noteDescription.length > 1000;
@@ -118,9 +119,18 @@ export const MainActions = ({detailsdata, jobtitles, noteserviceproviders, reass
 
     // REASSIGN WORK ORDER FUNCTIONALLITY
     const reassignWorkOrder = ()=>console.log('REASSIGNING WORK ORDER')
-    const reassignWorkOrderContent = <ReassignWorkOrderComponent detailsdata={detailsdata} reassignserviceproviders={reassignserviceproviders} />;
+    const reassignWorkOrderContent = <ReassignWorkOrderComponent reassignserviceproviders={reassignserviceproviders} />;
     const resetReassingWOForm = global.resetReassingWOForm
     const reassignError = global.reassignSPSelectVal == ''
+    const canReassign = () => {
+        if(WO_STATUS_CAN_REASSIGN.includes(status)){
+            if(permissions.permissionType !== 'admin_account'){
+                return permissions.hasEditAccess && !permissions.hasRank1Enabled;
+            }
+            return true;
+        }
+        return false;
+    }
 
     const updateWOStatus = global.updateWOStatus
     //const reassignedTo = global.handleReassignToSelect
@@ -146,7 +156,7 @@ export const MainActions = ({detailsdata, jobtitles, noteserviceproviders, reass
             />
             <PopupComponent buttonLabel="Not Fixed" modalTitle="Not Fixed" btnClasses={`${classes.actionButton} action-button ${classes.disabled}`} btn2Classes={`${classes.actionButton} action-button`} btn1Classes={`${classes.actionButton} action-button`} btnStartIcon={<NotFixed/>} onSubmit={updateWOStatus} MuiDialogTitle={classes.MuiDialogTitle} content="Not fixed?" />
             <PopupComponent 
-                actionDisabled={true}
+                actionDisabled={!canReassign()}
                 buttonLabel="Reassign"
                 modalTitle={'Reassing Work Order'}
                 btnClasses={`${classes.actionButton} action-button`} 
@@ -162,7 +172,7 @@ export const MainActions = ({detailsdata, jobtitles, noteserviceproviders, reass
                 content={reassignWorkOrderContent} />
             {/* <PopupComponent buttonLabel="Complete" modalTitle="Complete" btnClasses={`${classes.actionButton} action-button`} btn2Classes={`${classes.actionButton} action-button`} btn1Classes={`${classes.actionButton} action-button`} btnStartIcon={<Complete/>} onSubmit={updateWOStatus} MuiDialogTitle={classes.MuiDialogTitle} content="Complete?" /> */}
             <PopupComponent
-                actionDisabled={!(W0_STATUS_CAN_CANCEL.includes(status))}
+                actionDisabled={!(WO_STATUS_CAN_CANCEL.includes(status))}
                 buttonLabel="Cancel"
                 modalTitle={cancelProceeds ? "Work Order Cancellation Note" : "Work Order Cancel Confirmation"}
                 btnClasses={`${classes.actionButton} action-button`} 

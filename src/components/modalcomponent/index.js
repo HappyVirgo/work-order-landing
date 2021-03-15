@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
+import Tooltip from '@material-ui/core/Tooltip';
 
 //Material UI
 import { Button, Divider } from '@material-ui/core';
@@ -80,6 +81,9 @@ const useStyles = makeStyles((theme) => ({
     FullScreen: {
         marginTop: "25px",
         textTransform: "capitalize"
+    },
+    padding5: {
+        padding: '5px !important'
     }
 }));
 
@@ -114,11 +118,11 @@ const ModalComponent = ({title, data, type}) => {
     )
 
     const buttonAttachments = (
-        <Button variant="outlined" color="secondary" onClick={handleOpen} className={classes.button}>
+        <Tooltip title="More Info">
             <IconButton aria-label="More Info" onClick={handleOpen} className={classes.padding5} >
                 <OpenInBrowserIcon color="secondary" />
             </IconButton>
-        </Button>
+        </Tooltip>
     )  
     
     //vars

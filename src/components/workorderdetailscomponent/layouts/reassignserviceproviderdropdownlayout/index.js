@@ -49,7 +49,8 @@ export const ReassignServiceProvidersDropDown = ({defaultServiceProvider, reassi
     const handleReassignSPSelect = global.handleReassignSPSelect
     const reassignSPSelectVal = global.reassignSPSelectVal;
     
-    const woHasServiceProviders =() => reassignserviceproviders && reassignserviceproviders.data && reassignserviceproviders.data.rankedServiceProviders.length > 0;
+    const woHasServiceProviders =() => reassignserviceproviders && reassignserviceproviders.data && reassignserviceproviders.data.rankedServiceProviders && reassignserviceproviders.data.rankedServiceProviders.length > 0 
+    
     const getChip = (serviceProvider)=>
                 <>
                     <Chip
@@ -72,7 +73,7 @@ export const ReassignServiceProvidersDropDown = ({defaultServiceProvider, reassi
                     displayEmpty
                     value={woHasServiceProviders() ? reassignSPSelectVal !== '' ? reassignSPSelectVal : defaultServiceProvider : ''}
                     renderValue={(selected) => {
-                        if( reassignSPSelectVal == ''){
+                        if( reassignSPSelectVal == '' && defaultServiceProvider){
                             return defaultServiceProvider
                         }
                         return woHasServiceProviders() ? selected.serviceProviderRank + ' - ' + selected.companyName : 'No available service providers'

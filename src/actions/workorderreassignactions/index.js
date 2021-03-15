@@ -7,7 +7,7 @@
  */
 //Basic imports
 import * as types from '../../constants';
-import { apiServiceProvidersReassign } from '../../api';
+import { apiServiceProvidersReassign, apiReassignWO } from '../../api';
 
 export const receiveServiceProvidersReassignData = (data) => {
     return {type: types.RECEIVE_SERVICE_PROVIDERS_REASSIGN_DATA, data: data};
@@ -35,3 +35,40 @@ export const fetchServiceProvidersReassignData = async (dtlsID, userId, token) =
     }
 }
 
+export const reassignWorkOrderData = (data) => {
+    return {type: types.REASSIGN_WORK_ORDER_DATA, data: data};
+}
+
+export const reassignWorkOrder = async (dtlsID, token, userId, customerId, serviceProviderId) => {
+    const reassignWOURL = "/reassignRequest"
+    const accessFetchToken = (tk) => {
+        return tk.data
+    }
+    
+    const accessDtlId = (id) => {
+        return id
+    }
+    let accessToken = await accessFetchToken(token);
+    let idDtls = await accessDtlId(dtlsID);
+
+    const data = {
+        userId,
+        customerId,
+        serviceProviderId
+    }
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            Authorization: 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    };
+    return dispatch => {
+        return fetch(apiReassignWO+idDtls+reassignWOURL, requestOptions)
+            .then(response => response.json())
+            .then(json => dispatch(reassignWorkOrderData(json)))
+            .catch(error => console.log(error))
+    }
+}

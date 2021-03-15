@@ -35,7 +35,8 @@ import {
     fetchWarrantyWOData,
     createNoteWOData,
     updateWOStatus,
-    cancelWorkOrder
+    cancelWorkOrder,
+    fetchPermissionsByUser
     //fetchServiceProviders,
 } from '../../actions';
 
@@ -46,6 +47,8 @@ import { GlobalContext } from '../../context/globalcontext'
 //Declaring global variables
 //Token
 let token
+//Permissions
+let permissions
 //User ID
 let userId
 let userData
@@ -108,6 +111,7 @@ class WorkOrdersBuilder extends Component {
     constructor() {
         super()
         this.state = {
+            permissions,
             targetId: "emergencyWO",
             detailsId: "",
             loading: false,
@@ -442,6 +446,10 @@ class WorkOrdersBuilder extends Component {
     dynamicData = (event) => {
         event.preventDefault();
         let target = event.target.id
+        //Clear searchTerm
+        this.setState({
+            searchTerm: "",
+        })
         if(target.length>0){
             this.setState({
                 targetId: target,
@@ -461,17 +469,26 @@ class WorkOrdersBuilder extends Component {
         data.sort((a, b) => b.workOrderId-a.workOrderId);
         data.sort((a, b) => b.dateCreated-a.dateCreated);
     }
-    
+
+    handlePermissions = (permissionsData) => {
+        permissions = permissionsData
+    }
+
     async componentDidMount() {
         token = await this.props.oauthFetchToken()
         //Setting user information
         //userData = await this.props.fetchUsersInformation()
         //userId = userData.userdata.user.user_id   
         //Next line it's to test in local     
-        userId = "2152"
+        userId = "2146"
         this.setState({ 
             firstLoading: true
         })
+        permissions = await this.props.fetchPermissionsByUser()
+        this.setState({
+            permissions
+        }, this.handlePermissions(permissions));
+
         ctadata = await this.props.fetchCTAsData()
 
         tmpdata = await this.props.fetchEmergencyWOData()  
@@ -489,7 +506,7 @@ class WorkOrdersBuilder extends Component {
         notesdata = await this.props.fetchNotesWOData()
         jobtitlesdata = await this.props.fetchJobTitlesWOData()
         noteserviceprovidersdata = await this.props.fetchServiceProvidersWOData()
-        //reassignspdata = await this.props.fetchServiceProvidersReassignData()
+        reassignspdata = await this.props.fetchServiceProvidersReassignData()
         //serviceProviders = await this.props.fetchServiceProviders();
         // this.sortOrderNotesByDate()
         warrantydata = await this.props.fetchWarrantyWOData()
@@ -513,7 +530,7 @@ class WorkOrdersBuilder extends Component {
         notesdata = await this.props.fetchNotesWOData(dtlsID, token)
         jobtitlesdata = await this.props.fetchJobTitlesWOData(dtlsID, token)
         noteserviceprovidersdata = await this.props.fetchServiceProvidersWOData(dtlsID, token)
-        //reassignspdata = await this.props.fetchServiceProvidersReassignData()
+        reassignspdata = await this.props.fetchServiceProvidersReassignData()
         // this.sortOrderNotesByDate()
         attachmentsdata = await this.props.fetchAttachmentsWOData(dtlsID, token)
         historydata = await this.props.fetchHistoryWOData(dtlsID, token)
@@ -618,17 +635,17 @@ class WorkOrdersBuilder extends Component {
             */
            //Change details data
             const handleChangePrevState = (dtlsID) => {
-            const id = dtlsID
-            handleId(id)
+                const id = dtlsID
+                handleId(id)
             }
             const handleId = async(dtlsID) => {
-                if(this.state.firstLoading === false) {
+                if(this.state.firstLoading === false) {                  
                     token = await this.props.oauthFetchToken()
                     detailsdata = await this.props.fetchDetailsWOData(dtlsID, token)
                     notesdata = await this.props.fetchNotesWOData(dtlsID, token)
                     jobtitlesdata = await this.props.fetchJobTitlesWOData(dtlsID, token)
                     noteserviceprovidersdata = await this.props.fetchServiceProvidersWOData(dtlsID, token)
-                    //reassignspdata = await this.props.fetchServiceProvidersReassignData()
+                    reassignspdata = await this.props.fetchServiceProvidersReassignData()
                     //serviceProviders = await this.props.fetchServiceProviders(dtlsID, token);
                     // this.sortOrderNotesByDate()
                     attachmentsdata = await this.props.fetchAttachmentsWOData(dtlsID, token)
@@ -652,7 +669,7 @@ class WorkOrdersBuilder extends Component {
                      */
                     //Each case should be the CTA id
                     case "emergencyWO":
-                        
+                        document.getElementById("search-input-filled-label").value = "Johnny Bravo";                        
                         tmp = await this.props.fetchEmergencyWOData()
                         dataSearch = tmp.data?tmp.data.work_orders:[]  
                         if(searchTermIn.length>3) {
@@ -677,7 +694,6 @@ class WorkOrdersBuilder extends Component {
                         }
                         break; 
                     case "openWO":
-                        
                         tmp = await this.props.fetchOpenWOData()
                         dataSearch = tmp.data?tmp.data.work_orders:[]
                         if(searchTermIn.length>3) {
@@ -701,8 +717,7 @@ class WorkOrdersBuilder extends Component {
                             }
                         }
                         break;
-                    case "pendingWO":
-                    
+                    case "pendingWO":               
                     tmp = await this.props.fetchPendingWOData()
                     dataSearch = tmp.data?tmp.data.work_orders:[]  
                     if(searchTermIn.length>3) {
@@ -726,7 +741,7 @@ class WorkOrdersBuilder extends Component {
                     }
                     break;                   
                     case "assignedWO":
-                    
+
                     tmp = await this.props.fetchAssignedToMeWOData()
                     dataSearch = tmp.data?tmp.data.work_orders:[]  
                     if(searchTermIn.length>3) {
@@ -884,6 +899,8 @@ class WorkOrdersBuilder extends Component {
             cancelWONoteDescription: this.state.cancelWONoteDescription,
             cancelProceeds: this.state.cancelProceeds,
             reassignSPSelectVal: this.state.reassignSPSelectVal,
+            checkCurretCTA: this.state.targetId,
+            filterCurrentId: this.state.searchBy,
             handleJobTitlesSelect: this.handleJobTitlesSelect,
             handleOnDeleteChipJobTitle: this.handleOnDeleteChipJobTitle,
             handleServiceProvidersSelect: this.handleServiceProvidersSelect,
@@ -894,7 +911,8 @@ class WorkOrdersBuilder extends Component {
             cancelWorkOrder: this.cancelWorkOrder,
             resetCancelWOForm: this.resetCancelWOForm,
             handleReassignSPSelect: this.handleReassignSPSelect,
-            resetReassingWOForm: this.resetReassingWOForm
+            resetReassingWOForm: this.resetReassingWOForm,
+            permissions: this.state.permissions
         }
         return (
             <GlobalContext.Provider value={globalState}>
@@ -953,6 +971,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     oauthFetchToken: () => dispatch(oauthFetchToken()),
+    fetchPermissionsByUser: () => dispatch(fetchPermissionsByUser(userId, token)),
     fetchCTAsData: () => dispatch(fetchCTAsData(token, userId)),   
     fetchSearchData: () => dispatch(fetchSearchData(searchTerm, searchBy, token, userId)),   
     fetchWarrantyWOData: () => dispatch(fetchWarrantyWOData(dtlsID, token)),   

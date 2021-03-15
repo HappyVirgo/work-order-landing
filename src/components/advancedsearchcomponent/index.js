@@ -5,7 +5,7 @@
  * Ticket: ET-237
  */
 //Basic imports
-import React, {useContext, useState} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 
 //Material UI
 import { makeStyles } from '@material-ui/core/styles';
@@ -58,10 +58,19 @@ const AdvancedSearchComponent = () => {
     const [searchBox, setSearchBox] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     let searchFunc = useContext(GlobalContext)
+    let checkCTA = searchFunc.checkCurretCTA    
     let searchTerm = searchFunc.handleSearchTerm 
     let searchBy = searchFunc.handleSearchBy
     let searchByState = searchFunc.searchByState
+    let filterID = searchFunc.filterCurrentId
     const classes = useStyles();
+
+    useEffect(() => {
+        if(filterID!==1) {
+            setSearchValue("");
+        }
+    }, [checkCTA, filterID]);
+
     return (
         <div className={`search-form ${searchBox?'rounded':''}`}>
             <FormControl className={`advanced ${searchBox?'opened':''}`}>

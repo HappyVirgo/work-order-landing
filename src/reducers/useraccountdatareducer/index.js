@@ -15,7 +15,13 @@ const userAccountDataReducer = handleActions({
     [types.RECEIVE_USER_DATA]: (state, action) => {
         newState.userdata = action.userdata;
         return newState;    
-    }    
+    },
+    [types.RECEIVE_USER_PERMISIONS_DATA]: (state, action) => {
+        return {
+            ...state,
+            data: action.data
+        };    
+    },    
 }, initialState);
 
 export default userAccountDataReducer;

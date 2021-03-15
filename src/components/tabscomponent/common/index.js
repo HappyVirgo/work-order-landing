@@ -58,6 +58,7 @@ let columnsHistory = [
 let columnsAttachments = [
     {
         label: "Date Created",
+        typeOfTab: "document",
         dataKey: "dateCreated",
         dateField: true,
         extraKey: false,
@@ -65,18 +66,20 @@ let columnsAttachments = [
     }, 
     {
         label: "Description",
+        typeOfTab: "document",
         dataKey: "description",
         extraKey: false,
         numeric: false,
     },
     {
         label: "Document Type",
+        typeOfTab: "document",
         dataKey: "documentType",
         extraKey: false,
         numeric: false,
     },
     {
-        label: "Details",
+        label: "",
         itsButton: true,
         typeOfTab: "document",
         numeric: false,

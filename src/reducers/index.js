@@ -17,6 +17,7 @@ import notesWorkOrderReducer from './workordersnotesreducer'
 import attachmentsWorkOrdersReducer from './workorderattachmentsreducer'
 import advancedSearchDataReducer from './advancedsearchreducer'
 import warrantyModalReducer from './warrantymodalreducer'
+import reassignWorkOrderReducer  from './workorderreassignreducer'
 
 export {
     oauthTokenReducer,
@@ -31,5 +32,6 @@ export {
     historyWorkOrdersReducer,
     notesWorkOrderReducer,
     attachmentsWorkOrdersReducer,
-    warrantyModalReducer
+    warrantyModalReducer,
+    reassignWorkOrderReducer
 }
