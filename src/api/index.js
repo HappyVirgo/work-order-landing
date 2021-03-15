@@ -58,5 +58,11 @@ export const apiServiceProvidersWO = _STAGE
 //Cancel WorkOrders
 export const apiCancelWO = _STAGE
 
-//Reassign WorkOrders
+// SP Reassign WorkOrders
 export const apiServiceProvidersReassign = _STAGE
+
+// Reassign WorkOrders
+export const apiReassignWO = _STAGE
+
+//User Permissions
+export const apiPermissions =  _STAGE

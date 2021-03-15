@@ -13,14 +13,15 @@ import Chip from '@material-ui/core/Chip';
 //Layouts
 import { ReassignServiceProvidersDropDown } from "../reassignserviceproviderdropdownlayout";
 
-export const ReassignWorkOrderComponent = ({detailsdata, reassignserviceproviders}) => {
+export const ReassignWorkOrderComponent = ({reassignserviceproviders}) => {
 	let currentSP
-	reassignserviceproviders.data.rankedServiceProviders.some((element) => {
+	reassignserviceproviders.data.rankedServiceProviders && reassignserviceproviders.data.rankedServiceProviders.some((element) => {
 		if(element.isCurrentAssignee){
 		currentSP = element;
 		}
 	})
 	const defaultServiceProvider = 
+    currentSP &&
         <>
             <>{currentSP.serviceProviderRank} - {currentSP.companyName}  </>
             <Chip

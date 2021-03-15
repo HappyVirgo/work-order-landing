@@ -1,6 +1,7 @@
 //User Information
 import {
     fetchUsersInformation,
+    fetchPermissionsByUser
 } from './useraccountdataactions'
 
 //CTAs Components
@@ -99,5 +100,6 @@ export {
     fetchJobTitlesWOData,
     fetchServiceProvidersWOData,
     cancelWorkOrder,
-    fetchServiceProvidersReassignData
+    fetchServiceProvidersReassignData,
+    fetchPermissionsByUser
 }
